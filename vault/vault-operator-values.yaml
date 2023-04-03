@@ -1,0 +1,29 @@
+defaultVaultConnection:
+  # toggles the deployment of the VaultAuthMethod CR
+  enabled: true
+
+  # Address of the Vault Server
+  # Example: http://vault.default.svc.cluster.local:8200
+  address: "http://vault.vault.svc.cluster.local:8200"
+  skipTLSVerify: false
+
+defaultAuthMethod:
+  enabled: true
+  # Vault namespace for the VaultAuthMethod CR
+  namespace: "app"
+  method: kubernetes
+  mount: kubernetes
+
+  # Vault Kubernetes auth method specific configuration
+  kubernetes:
+    # Vault Auth Role to use
+    # This is a required field and must be setup in Vault prior to deploying the helm chart
+    # if `defaultAuthMethod.enabled=true`
+    role: "role1"
+
+    # Kubernetes ServiceAccount associated with the default Vault Auth Role
+    serviceAccount: default
+
+    # Token Audience should match the audience of the vault kubernetes auth role.
+    # @type: array<string>
+    tokenAudiences: ["vault"]
