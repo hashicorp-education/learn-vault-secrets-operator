@@ -12,7 +12,7 @@ defaultAuthMethod:
   # Vault namespace for the VaultAuthMethod CR
   namespace: "app"
   method: kubernetes
-  mount: kubernetes
+  mount: demo-auth-mount
 
   # Vault Kubernetes auth method specific configuration
   kubernetes:
