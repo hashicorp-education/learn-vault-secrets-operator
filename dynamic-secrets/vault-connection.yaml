@@ -1,7 +1,0 @@
-apiVersion: secrets.hashicorp.com/v1alpha1
-kind: VaultConnection
-metadata:
-  name: default
-  namespace: vault-secrets-operator-system
-spec:
-  address: http://vault.vault.svc.cluster.local:8200

@@ -1,14 +1,15 @@
-apiVersion: secrets.hashicorp.com/v1alpha1
+apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  name: demo-operator
+  name: transit-auth
+  # This Vault Auth is used for transit engine hence stays in the VSO namespace
   namespace: vault-secrets-operator-system
   labels:
     cacheStorageEncryption: "true"
 spec:
   method: kubernetes
   mount: demo-auth-mount
-  vaultConnectionRef: default
+  vaultConnectionRef: dynamic-auth
   kubernetes:
     role: auth-role-operator
     serviceAccount: demo-operator

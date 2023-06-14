@@ -1,8 +1,8 @@
-apiVersion: secrets.hashicorp.com/v1alpha1
+apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  name: default
-  namespace: vault-secrets-operator-system
+  name: dynamic-auth
+  namespace: demo-ns
 spec:
   method: kubernetes
   mount: demo-auth-mount
