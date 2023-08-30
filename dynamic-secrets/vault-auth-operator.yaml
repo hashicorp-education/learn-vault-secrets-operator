@@ -12,7 +12,7 @@ spec:
   vaultConnectionRef: dynamic-auth
   kubernetes:
     role: auth-role-operator
-    serviceAccount: demo-operator
+    serviceAccount: vault-secrets-operator-system
     audiences:
       - vault
   storageEncryption:
