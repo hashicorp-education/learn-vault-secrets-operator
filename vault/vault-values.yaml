@@ -3,6 +3,17 @@ server:
     enabled: true
     devRootToken: "root"
   logLevel: debug
+  # service:
+  #   enabled: true
+  #   type: ClusterIP
+  #   # Port on which Vault server is listening
+  #   port: 8200
+  #   # Target port to which the service should be mapped to
+  #   targetPort: 8200
+ui:
+  enabled: true
+  serviceType: "LoadBalancer"
+  externalPort: 8200
 
 injector:
   enabled: "false"
