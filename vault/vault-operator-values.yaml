@@ -13,4 +13,4 @@ controller:
         transitMount: demo-transit
         kubernetes:
           role: auth-role-operator
-          serviceAccount: default
+          serviceAccount: vault-secrets-operator-controller-manager
