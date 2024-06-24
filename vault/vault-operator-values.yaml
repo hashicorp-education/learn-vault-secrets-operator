@@ -3,7 +3,7 @@ defaultVaultConnection:
   address: "http://vault.vault.svc.cluster.local:8200"
   skipTLSVerify: false
 controller:
-  manager: ## controller.manager.image.pullPolicy
+  manager:
     image:
       tag: 0.0.0-dev
       pullPolicy: Never
