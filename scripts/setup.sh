@@ -19,18 +19,16 @@ export VAULT_LICENSE=$1
 
 # helm search repo hashicorp/vault
 
-read -p "Press enter to continue"
-
 kubectl create ns vault
 
 kubectl create secret generic vault-license --from-literal license=$VAULT_LICENSE -n vault
 
 helm install vault hashicorp/vault -n vault --create-namespace --values vault/vault-values.yaml
 
-read -p "Press enter to continue"
-
 # export VAULT_TOKEN="root" 
 # export VAULT_ADDR=http://127.0.0.1:8200
+
+kubectl port-forward -n vault statefulset/vault 38306:8200 &
 
 echo "kubectl port-forward -n vault statefulset/vault 38306:8200 &"
 read -p "Press enter to continue"
@@ -61,6 +59,8 @@ VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/role/role1 \
 
 VAULT_NAMESPACE=us-west-org vault kv put kvv2/webapp/config username="static-user" password="static-password"
 
+read -p "Press enter to continue"
+
 ## to build new image use this
 ## these execute in the cloned repo of VSO 
 # export GOOS='linux'
@@ -76,6 +76,9 @@ VAULT_NAMESPACE=us-west-org vault kv put kvv2/webapp/config username="static-use
 
 ## execute this in VSO repo with the VAULT-25164/kv-events branch
 # helm install vault-secrets-operator ./chart --version 0.0.0-dev -n vault-secrets-operator-system --create-namespace --values vov.yaml
+helm install vault-secrets-operator hashicorp/vault -n vault-secrets-operator-system --create-namespace --values vov.yaml
+
+read -p "Press enter to continue"
 
 # back in learn-vault-secrets-operator
 
