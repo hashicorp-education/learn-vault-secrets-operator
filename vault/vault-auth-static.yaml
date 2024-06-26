@@ -1,4 +1,14 @@
 ---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: static-default
+  namespace: app
+spec:
+  address: https://vault.vault.svc.cluster.local:8200
+  # caCertSecretRef: vault-ca
+  # tlsServerName: vault
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -11,8 +21,10 @@ metadata:
   name: static-auth
   namespace: app
 spec:
+  # vaultConnectionRef: app/static-default # added
   method: kubernetes
   mount: demo-auth-mount
+  namespace: us-west-org
   kubernetes:
     role: role1
     serviceAccount: instant-update-app
