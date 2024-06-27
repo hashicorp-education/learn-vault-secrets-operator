@@ -34,13 +34,13 @@ VAULT_NAMESPACE=us-west-org vault policy write dev - <<EOF
 EOF
 # could not run remotely
 VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/role/role1 \
-   bound_service_account_names=instant-update-app \
+   bound_service_account_names=demo-app \
    bound_service_account_namespaces=app \
    policies=dev \
    token_period=2m
 
 # VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/role/role1 \
-#    bound_service_account_names=instant-update-app \
+#    bound_service_account_names=demo-app \
 #    bound_service_account_namespaces=app \
 #    policies=dev \
 #    audience=vault \

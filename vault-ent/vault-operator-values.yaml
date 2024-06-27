@@ -4,6 +4,9 @@ defaultVaultConnection:
   skipTLSVerify: false
 controller:
   manager:
+    image:
+      tag: 0.0.0-dev
+      pullPolicy: Never
     clientCache:
       persistenceModel: direct-encrypted
       storageEncryption:
@@ -13,4 +16,4 @@ controller:
         transitMount: demo-transit
         kubernetes:
           role: auth-role-operator
-          serviceAccount: demo-operator
+          serviceAccount: demo-app # demo-operator

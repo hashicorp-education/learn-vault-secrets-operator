@@ -1,8 +1,17 @@
+# global:
+#   tlsDisable: true # no tls initially
 server:
+  image:
+    tag: "1.16.3-ent" # required for vault enterprise?
+    repository: hashicorp/vault-enterprise
   dev:
     enabled: true
     devRootToken: "root"
   logLevel: debug
+  affinity: ""
+
+  enterpriseLicense:
+    secretName: vault-license
   # service:
   #   enabled: true
   #   type: ClusterIP
@@ -10,10 +19,10 @@ server:
   #   port: 8200
   #   # Target port to which the service should be mapped to
   #   targetPort: 8200
-ui:
-  enabled: true
-  serviceType: "LoadBalancer"
-  externalPort: 8200
+# ui:
+#   enabled: true
+#   serviceType: "LoadBalancer"
+#   externalPort: 8200
 
 injector:
   enabled: "false"
