@@ -16,9 +16,9 @@ kubectl exec --stdin=true --tty=true vault-0 -n vault -- /bin/sh
 vault namespace create us-west-org
 
 VAULT_NAMESPACE=us-west-org vault auth enable -path demo-auth-mount kubernetes
-
+# this has to be executed on the vault server otherwise ENV variable will not be set correctly
 VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/config \
-	kubernetes_host="http://$KUBERNETES_PORT_443_TCP_ADDR:443"
+	kubernetes_host="https://$KUBERNETES_PORT_443_TCP_ADDR:443"
 
 VAULT_NAMESPACE=us-west-org vault secrets enable -path=kvv2 kv-v2
 ## could not run below in shell on vault server, had to remotely run
@@ -60,8 +60,12 @@ docker build -t hashicorp/vault-secrets-operator:0.0.0-dev . --target=dev \
 # clear all vso images from mk repo
 minikube image ls
 minikube image rm docker.io/hashicorp/vault-secrets-operator:latest
+minikue image 
+minikube image load hashicorp/vault-secrets-operator:0.0.0-dev
 
 helm install vault-secrets-operator ./chart --version 0.0.0-dev -n vault-secrets-operator-system --create-namespace --values vov.yaml  
+
+kubectl describe pod vault-secrets-operator -n vault-secrets-operator-system
 
 # back in learn-vault-cso repo
 kubectl create ns app
@@ -70,3 +74,4 @@ kubectl apply -f vault/vault-auth-static.yaml
 
 kubectl apply -f vault/static-secret.yaml
 
+VAULT_NAMESPACE=us-west-org vault kv put kvv2/webapp/config username="static-user1" password="static-password5"
