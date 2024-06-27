@@ -4,6 +4,9 @@ defaultVaultConnection:
   skipTLSVerify: false
 controller:
   manager:
+    image:
+      tag: 0.0.0-dev
+      pullPolicy: Never
     clientCache:
       persistenceModel: direct-encrypted
       storageEncryption:

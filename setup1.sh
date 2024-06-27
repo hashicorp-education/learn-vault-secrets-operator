@@ -48,10 +48,22 @@ VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/role/role1 \
 
 VAULT_NAMESPACE=us-west-org vault kv put kvv2/webapp/config username="static-user" password="static-password"
 # demo uses kustomize instead of helm
-helm install vault-secrets-operator hashicorp/vault-secrets-operator -n vault-secrets-operator-system --create-namespace --values vault/vault-operator-values.yaml
-# below is test version with instant updates
-# helm install vault-secrets-operator ./chart --version 0.0.0-dev -n vault-secrets-operator-system --create-namespace --values vault/vault-operator-values.yaml
 
+# in cloned vso repo
+export GOARCH=amd64
+GOOS=linux
+docker build -t hashicorp/vault-secrets-operator:0.0.0-dev . --target=dev \
+        --build-arg GOOS=$GOOS \
+        --build-arg GOARCH=$GOARCH \
+        --build-arg GO_VERSION=$(cat .go-version) \
+        --build-arg LD_FLAGS="$(GOOS=$GOOS GOARCH=$GOARCH ./scripts/ldflags-version.sh)"
+# clear all vso images from mk repo
+minikube image ls
+minikube image rm docker.io/hashicorp/vault-secrets-operator:latest
+
+helm install vault-secrets-operator ./chart --version 0.0.0-dev -n vault-secrets-operator-system --create-namespace --values vov.yaml  
+
+# back in learn-vault-cso repo
 kubectl create ns app
 
 kubectl apply -f vault/vault-auth-static.yaml
