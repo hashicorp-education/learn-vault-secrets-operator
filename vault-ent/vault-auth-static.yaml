@@ -15,6 +15,13 @@ metadata:
   name: demo-app
   namespace: app
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  # SA bound to the VSO namespace for transit engine auth
+  namespace: vault-secrets-operator-system
+  name: demo-operator
+---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
