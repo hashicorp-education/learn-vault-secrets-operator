@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vso-db-demo
+  namespace: demo-ns
+  labels:
+    test: vso-db-demo
+spec:
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      test: vso-db-demo
+  template:
+    metadata:
+      labels:
+        test: vso-db-demo
+    spec:
+      volumes:
+        - name: secrets
+          secret:
+            secretName: "vso-db-demo"
+      containers:
+        - name: example
+          image: nginx:latest
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "vso-db-demo"
+                  key: password
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: "vso-db-demo"
+                  key: username
+          volumeMounts:
+            - name: secrets
+              mountPath: /etc/secrets
+              readOnly: true
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "50Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+              httpHeaders:
+                - name: X-Custom-Header
+                  value: Awesome
+            initialDelaySeconds: 3
+            periodSeconds: 3
