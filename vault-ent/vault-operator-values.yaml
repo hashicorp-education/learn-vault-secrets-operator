@@ -1,0 +1,19 @@
+defaultVaultConnection:
+  enabled: true
+  address: "http://vault.vault.svc.cluster.local:8200"
+  skipTLSVerify: false
+controller:
+  manager:
+    image: # TODO: remove at release
+      tag: 0.0.0-dev
+      pullPolicy: Never
+    clientCache:
+      persistenceModel: direct-encrypted
+      storageEncryption:
+        enabled: true
+        mount: demo-auth-mount
+        keyName: vso-client-cache
+        transitMount: demo-transit
+        kubernetes:
+          role: auth-role-operator
+          serviceAccount: demo-operator

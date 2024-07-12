@@ -1,0 +1,14 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: dynamic-auth
+  namespace: demo-ns
+spec:
+  method: kubernetes
+  mount: demo-auth-mount
+  namespace: us-west-org
+  kubernetes:
+    role: auth-role
+    serviceAccount: default
+    audiences:
+      - vault

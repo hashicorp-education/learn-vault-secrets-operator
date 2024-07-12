@@ -1,0 +1,15 @@
+auth:
+  audit:
+    logConnections: true
+
+primary:
+  podSecurityContext:
+    enabled: true
+    fsGroup: 
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1000710002
+
+volumePermissions:
+  containerSecurityContext:
+    runAsUser: 1000710003
