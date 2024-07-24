@@ -10,7 +10,7 @@ spec:
   method: kubernetes
   mount: demo-auth-mount
   namespace: us-west-org
-  vaultConnectionRef: dynamic-auth
+  vaultConnectionRef: default # dynamic-auth
   kubernetes:
     role: auth-role-operator
     serviceAccount: default
