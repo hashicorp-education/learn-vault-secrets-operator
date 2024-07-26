@@ -14,5 +14,4 @@ controller:
         kubernetes:
           role: auth-role-operator
           serviceAccount: vault-secrets-operator-controller-manager
-          audiences:
-            - vault
+          tokenAudiences: ["vault"]

@@ -1,3 +1,10 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: demo-ns
+  name: demo-dynamic-app
+---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
@@ -8,6 +15,6 @@ spec:
   mount: demo-auth-mount
   kubernetes:
     role: auth-role
-    serviceAccount: default
+    serviceAccount: demo-dynamic-app
     audiences:
       - vault
