@@ -1,9 +1,16 @@
 default: all-ent
 
+community: prerequisites start-minikube install-vault-cluster
 all-ent: ent-prerequisites start-minikube install-vault-ent-cluster config-vault install-the-vault-secrets-operator deploy-and-sync-a-secret rotate-the-secret install-postgresql-pod setup-postgresql transit-encryption setup-dynamic-secrets create-the-application
-export ENT_RUN:="0"
 
-# foo := if '$VAULT_LICENSE' =~ '' {'${VAULT_LICENSE}'} else {error("$VAULT_LICENSE not set")}
+versions:
+    docker version
+    helm version
+    k9s version
+    kubectl version
+    minikube version
+    vault version
+
 
 test:
     @echo $VAULT_LICENSE
@@ -17,16 +24,19 @@ start-minikube:
 
 clean-up:
     minikube delete
+    # minikube delete --all --purge
 
 kill-ns:
 	@kubectl delete ns vault app vault-secrets-operator-system demo-ns postgres
 	sleep 5
 
 prep-cluster-install:
-	@helm repo add hashicorp https://helm.releases.hashicorp.com
-	@helm repo update
-	@helm search repo hashicorp/vault
-
+   kubectl apply --filename support/preloadImages.yaml
+   helm repo add hashicorp https://helm.releases.hashicorp.com
+   helm repo update
+   helm search repo hashicorp/vault
+   sleep 10
+   
 install-vault-cluster: prep-cluster-install
 	@helm install vault hashicorp/vault -n vault --create-namespace --values vault/vault-values.yaml
 	@kubectl get pods -n vault
@@ -77,12 +87,12 @@ config-vault:
     kubectl exec -it vault-0 -n vault -- vault namespace create us-west-org
     kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault auth enable -path demo-auth-mount kubernetes
     addr1=$(kubectl exec vault-0 -n vault --  printenv KUBERNETES_PORT_443_TCP_ADDR)
-    echo "$addr1"
+    @echo "$addr1"
     kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/config \
         kubernetes_host="https://$addr1:443"
     kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault secrets enable -path=kvv2 kv-v2
     kubectl cp -n vault support/webapp.hcl vault-0:/tmp/webapp.hcl 
-    kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault policy write  webapp /tmp/webapp.hcl
+    kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault policy write webapp /tmp/webapp.hcl
     kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault write auth/demo-auth-mount/role/role1 \
         bound_service_account_names=demo-static-app \
         bound_service_account_namespaces=app \
@@ -111,7 +121,7 @@ _print_dynamic_secrets:
 
 rotate-the-secret:
 	@just _print_static_secrets
-	@kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault kv put kvv2/webapp/config username="static-user2" password="static-password2"
+	@kubectl exec -it vault-0 -n vault -- env VAULT_NAMESPACE=us-west-org vault kv put kvv2/webapp/config username="static-user3" password="static-password3"
 	@just _print_static_secrets
 
 uninstall-app-ns:
@@ -209,7 +219,13 @@ prerequisites:
 
 ent-prerequisites: prerequisites
     #!/usr/bin/env bash
+    echo ">> running $0"
     if [ -z "${VAULT_LICENSE}" ]; then
         echo "VAULT_LICENSE not set"
         exit 1
     fi
+
+[group('all')]
+help:
+   @echo ">> running $0"
+   @just --list

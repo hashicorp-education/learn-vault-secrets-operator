@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: preload
+spec:
+  selector:
+    matchLabels:
+      name: preload
+  template:
+    metadata:
+      labels:
+        name: preload
+    spec:
+      # Configure an init container for each image you want to pull
+      initContainers:
+        - name: preload-postgres
+
+          image: docker.mirror.hashicorp.services/postgres:latest
+          command: ["sh", "-c", "'true'"]
+        - name: preload-vault
+          image: hashicorp/vault:1.20
+          command: ["sh", "-c", "'true'"]
+        # - name: preload-vso
+        #   image: hashicorp/vault-secrets-operator
+        #   command: ["sh", "-c", "'true'"]
+      # The pause container ensures the Pod goes into a `Running` phase
+      # but doesn't take up resources
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause:3.2
+          resources:
+            limits:
+              cpu: 1m
+              memory: 8Mi
+            requests:
+              cpu: 1m
+              memory: 8Mi

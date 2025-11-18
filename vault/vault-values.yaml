@@ -1,4 +1,7 @@
 server:
+  image:
+    tag: "1.20" 
+    repository: hashicorp/vault
   dev:
     enabled: true
     devRootToken: "root"
