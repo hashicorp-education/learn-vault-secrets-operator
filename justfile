@@ -1,10 +1,8 @@
 default: all-ent
 
 all-ent: ent-prerequisites start-minikube install-vault-ent-cluster config-vault install-the-vault-secrets-operator deploy-and-sync-a-secret rotate-the-secret install-postgresql-pod setup-postgresql transit-encryption setup-dynamic-secrets create-the-application
+community: prerequisites start-minikube install-vault-cluster
 export ENT_RUN:="0"
-
-# foo := if '$VAULT_LICENSE' =~ '' {'${VAULT_LICENSE}'} else {error("$VAULT_LICENSE not set")}
-
 test:
     @echo $VAULT_LICENSE
     @just _print_static_secrets
@@ -69,8 +67,8 @@ install-the-vault-secrets-operator:
 uninstall-vso:
 	@helm uninstall vault-secrets-operator -n vault-secrets-operator-system
 
-# vso-logs:
-# 	@kubectl logs -n vault-secrets-operator-system -l app.kubernetes.io/name=vault-secrets-operator -f
+vso-logs:
+   @kubectl logs -n vault-secrets-operator-system -l app.kubernetes.io/name=vault-secrets-operator -f
 
 config-vault: 
     #!/usr/bin/env bash
